@@ -1,0 +1,191 @@
+﻿@model IEnumerable<PhoneStore.Web.Models.Order>
+@{
+    ViewData["Title"] = "Tra cứu đơn hàng";
+}
+
+<!-- Tiêu đề & Thống kê nhanh -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">
+            <i class="bi bi-bag-check-fill text-primary me-2"></i>Lịch sử đơn hàng của tôi
+        </h3>
+        <span class="text-muted small">Theo dõi trạng thái vận chuyển và chi tiết các sản phẩm bạn đã đặt mua</span>
+    </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-detail-outline px-3 py-2 mt-2 mt-sm-0">
+        <i class="bi bi-arrow-left me-1"></i> Tiếp tục mua sắm
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+        <div class="mb-3">
+            <i class="bi bi-box2-heart text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h5 class="fw-bold">Bạn chưa có đơn hàng nào</h5>
+        <p class="text-muted small mb-4">Hãy khám phá các dòng điện thoại Flagship mới nhất với nhiều ưu đãi hấp dẫn tại PhoneStore!</p>
+        <div>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-buy-now px-4 py-2">
+                <i class="bi bi-cart-plus me-1"></i> Mua sắm ngay
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    @foreach (var order in Model)
+    {
+        // Chuẩn hóa trạng thái (hỗ trợ cả tiếng Anh lẫn tiếng Việt từ Admin)
+        string rawStatus = order.OrderStatus?.Trim() ?? "Pending";
+        
+        string statusText = rawStatus switch
+        {
+            "Pending" or "Chờ xử lý" => "Chờ xác nhận",
+            "Shipping" or "Đang giao hàng" => "Đang giao hàng",
+            "Delivered" or "Hoàn tất" => "Giao thành công",
+            "Cancelled" or "Hủy đơn" => "Đã hủy đơn",
+            _ => rawStatus
+        };
+
+        // Đổi màu nhãn trạng thái chính theo ý muốn (Hoàn tất / Giao thành công sẽ có màu xanh lá)
+        string statusBadgeClass = rawStatus switch
+        {
+            "Pending" or "Chờ xử lý" => "bg-warning bg-opacity-15 text-dark border border-warning",
+            "Shipping" or "Đang giao hàng" => "bg-info bg-opacity-15 text-primary border border-info",
+            "Delivered" or "Hoàn tất" => "bg-success bg-opacity-10 text-success border border-success",
+            "Cancelled" or "Hủy đơn" => "bg-danger bg-opacity-10 text-danger border border-danger",
+            _ => "bg-secondary text-white"
+        };
+
+        string statusIcon = rawStatus switch
+        {
+            "Pending" or "Chờ xử lý" => "bi-hourglass-split",
+            "Shipping" or "Đang giao hàng" => "bi-truck",
+            "Delivered" or "Hoàn tất" => "bi-patch-check-fill",
+            "Cancelled" or "Hủy đơn" => "bi-x-circle-fill",
+            _ => "bi-info-circle"
+        };
+
+        bool isPaid = order.PaymentStatus == "Paid";
+        
+        // Kiểm tra tiến trình để sáng đèn các bước
+        bool isShipping = rawStatus == "Shipping" || rawStatus == "Đang giao hàng";
+        bool isCompleted = rawStatus == "Delivered" || rawStatus == "Hoàn tất" || rawStatus == "Giao thành công";
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden bg-white">
+            <!-- Header của Thẻ Đơn hàng -->
+            <div class="card-header bg-white py-3 px-4 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge bg-dark rounded-3 px-3 py-2 fs-6">Đơn hàng #@order.Id</span>
+                    <span class="text-muted small ms-1">
+                        <i class="bi bi-calendar3 me-1"></i>Ngày đặt: <strong>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</strong>
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge rounded-pill px-3 py-2 @(isPaid ? "bg-success bg-opacity-10 text-success border border-success" : "bg-light text-secondary border")">
+                        <i class="bi @(isPaid ? "bi-check-circle-fill" : "bi-cash-stack") me-1"></i>
+                        @order.PaymentMethod - @(isPaid ? "Đã thanh toán" : "Chưa thanh toán")
+                    </span>
+
+                    <!-- Nhãn Trạng thái vận chuyển -->
+                    <span class="badge rounded-pill px-3 py-2 fw-semibold @statusBadgeClass">
+                        <i class="bi @statusIcon me-1"></i> @statusText
+                    </span>
+                </div>
+            </div>
+
+            <!-- Thanh thông tin người nhận & Tiến trình động -->
+            <div class="px-4 py-3 bg-light border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2 small">
+                <div>
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                    <span class="text-muted">Giao đến:</span>
+                    <strong class="text-dark ms-1">@order.CustomerName</strong>
+                    <span class="text-primary fw-semibold mx-1">(@order.Phone)</span>
+                    <span class="text-secondary">— @order.ShippingAddress</span>
+                </div>
+
+                @if (rawStatus != "Cancelled" && rawStatus != "Hủy đơn")
+                {
+                    <div class="d-flex align-items-center gap-2 text-muted fw-medium">
+                        <span class="text-success"><i class="bi bi-check-circle-fill"></i> Đã đặt</span>
+        
+                        <!-- Đổi màu mũi tên thành xanh lá nếu đã qua bước này -->
+                        <span class="@(isShipping || isCompleted ? "text-success" : "")">→</span>
+        
+                        <!-- Logic mới: Hoàn tất -> Xanh lá | Đang giao -> Xanh biển | Còn lại -> Mặc định -->
+                        <span class="@(isCompleted ? "text-success fw-bold" : (isShipping ? "text-primary fw-bold" : ""))">
+                            <i class="bi bi-box-seam"></i> Đang giao
+                        </span>
+        
+                        <span class="@(isCompleted ? "text-success" : "")">→</span>
+        
+                        <span class="@(isCompleted ? "text-success fw-bold" : "")">
+                            <i class="bi bi-house-check-fill"></i> Hoàn tất
+                        </span>
+                    </div>
+                }
+            </div>
+
+            <!-- Danh sách sản phẩm trong đơn -->
+            <div class="card-body px-4 py-3">
+                @if (order.OrderDetails != null)
+                {
+                    @foreach (var detail in order.OrderDetails)
+                    {
+                        <div class="d-flex align-items-center justify-content-between py-3 border-bottom last-border-0">
+                            <div class="d-flex align-items-center gap-3">
+                                @if (!string.IsNullOrEmpty(detail.Product?.ImageUrl))
+                                {
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@detail.ProductId" class="border rounded-3 p-1 bg-white d-inline-block">
+                                        <img src="@detail.Product.ImageUrl" alt="@detail.Product.Name" style="width: 64px; height: 64px; object-fit: contain;" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="border rounded-3 p-2 bg-light d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                                        <i class="bi bi-phone fs-3 text-muted"></i>
+                                    </div>
+                                }
+
+                                <div>
+                                    <a asp-controller="Home" asp-action="Details" asp-route-id="@detail.ProductId" class="text-decoration-none text-dark fw-bold fs-6">
+                                        @(detail.Product?.Name ?? "Sản phẩm điện thoại")
+                                    </a>
+                                    @if (detail.Product != null)
+                                    {
+                                        <div class="text-muted small mt-1">
+                                            Phân loại: <span class="badge bg-light text-secondary border">@detail.Product.RAM</span>
+                                            <span class="badge bg-light text-secondary border">@detail.Product.Storage</span>
+                                            <span class="badge bg-light text-secondary border">@detail.Product.Color</span>
+                                        </div>
+                                    }
+                                    <div class="mt-1 small fw-semibold text-primary">
+                                        Số lượng: x@(detail.Quantity)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-end">
+                                <div class="text-muted small">Đơn giá: @detail.UnitPrice.ToString("N0") ₫</div>
+                                <div class="fw-bold text-dark fs-6 mt-1">
+                                    @((detail.UnitPrice * detail.Quantity).ToString("N0")) ₫
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+                <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 mt-2">
+                    <div class="small text-muted">
+                        <i class="bi bi-shield-check text-success me-1"></i> Sản phẩm được bảo hành điện tử chính hãng 12 tháng
+                    </div>
+                    <div class="d-flex align-items-baseline gap-2">
+                        <span class="text-secondary fw-semibold">Tổng thanh toán:</span>
+                        <span class="phone-price fs-4">@order.TotalAmount.ToString("N0") ₫</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}

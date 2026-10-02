@@ -1,0 +1,128 @@
+﻿@model PhoneStore.Web.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container my-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0 m-0">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted"><i class="bi bi-house-door-fill me-1"></i>Trang chủ</a></li>
+            @if (Model.Category != null)
+            {
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-muted">@Model.Category.Name</a></li>
+            }
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5">
+        <div class="row g-0">
+            <!-- Hình ảnh & Chính sách -->
+            <div class="col-lg-5 p-4 p-md-5 bg-white d-flex flex-column">
+                <div class="phone-img-wrap flex-grow-1 d-flex align-items-center justify-content-center mb-4">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid" style="max-height: 450px; object-fit: contain; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+                </div>
+                
+                <!-- Trust Badges (Tái sử dụng .policy-box) -->
+                <div class="row g-3 mt-auto">
+                    <div class="col-6">
+                        <div class="policy-box text-center h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                            <i class="bi bi-shield-check text-success fs-4 mb-2"></i>
+                            <span class="fs-7 fw-semibold text-muted" style="font-size: 0.85rem;">Bảo hành 12 tháng</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="policy-box text-center h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                            <i class="bi bi-box-seam text-primary fs-4 mb-2"></i>
+                            <span class="fs-7 fw-semibold text-muted" style="font-size: 0.85rem;">Đổi trả 30 ngày</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thông tin sản phẩm -->
+            <div class="col-lg-7 p-4 p-md-5 bg-light border-start">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    @if (Model.Category != null)
+                    {
+                        <span class="badge bg-dark px-3 py-2 rounded-pill">@Model.Category.Name</span>
+                    }
+                    <span class="badge-installment"><i class="bi bi-credit-card-2-front me-1"></i>Trả góp 0%</span>
+                </div>
+                
+                <h1 class="fw-bold text-dark mb-2" style="font-size: 1.8rem;">@Model.Name</h1>
+                <div class="phone-price mb-4" style="font-size: 2rem;">@Model.Price.ToString("N0") ₫</div>
+
+                <!-- Box Khuyến mãi (Tái sử dụng .promo-note) -->
+                <div class="promo-note mb-4 p-3">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-gift-fill me-2 text-danger"></i>Ưu đãi dành cho bạn</h6>
+                    <ul class="mb-0 text-dark" style="font-size: 0.9rem;">
+                        <li class="mb-1">Giảm thêm <strong>5%</strong> (tối đa 500k) khi thanh toán qua VNPay.</li>
+                        <li>Tặng gói bảo hành vàng trị giá <strong>1.000.000đ</strong>.</li>
+                    </ul>
+                </div>
+
+                <!-- Bảng thông số gọn gàng hơn -->
+                <div class="bg-white rounded-3 p-4 shadow-sm border mb-4">
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Thông số kỹ thuật</h6>
+                    <table class="table table-borderless table-sm mb-0 align-middle">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted w-50 py-2"><i class="bi bi-memory me-2"></i>Dung lượng RAM</td>
+                                <td class="fw-semibold py-2">@Model.RAM</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted py-2"><i class="bi bi-hdd me-2"></i>Bộ nhớ trong</td>
+                                <td class="fw-semibold py-2">@Model.Storage</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted py-2"><i class="bi bi-palette me-2"></i>Màu sắc</td>
+                                <td class="fw-semibold py-2">@Model.Color</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted py-2"><i class="bi bi-box me-2"></i>Tình trạng</td>
+                                <td class="py-2">
+                                    @if (Model.StockQuantity > 0)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i>Còn @Model.StockQuantity sản phẩm</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1"><i class="bi bi-x-circle-fill me-1"></i>Tạm hết hàng</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mô tả -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-2">Đặc điểm nổi bật</h6>
+                    <p class="text-secondary" style="line-height: 1.6; font-size: 0.95rem;">@Model.Description</p>
+                </div>
+
+                <!-- Form Mua Hàng -->
+                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-auto pt-3 border-top">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <div class="input-group" style="width: 120px;">
+                            <span class="input-group-text bg-white border-end-0 fw-bold">SL</span>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="@Model.StockQuantity" class="form-control border-start-0 text-center fw-bold shadow-none" @(Model.StockQuantity <= 0 ? "disabled" : "") />
+                        </div>
+                        
+                        <button type="submit" class="btn btn-buy-now btn-lg flex-grow-1 py-3" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                            <i class="bi bi-cart-plus-fill me-2"></i> THÊM VÀO GIỎ HÀNG
+                        </button>
+                        
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-detail-outline btn-lg py-3 px-4">
+                            <i class="bi bi-arrow-return-left"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

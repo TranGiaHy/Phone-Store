@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Portal</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .sidebar { background-color: #1c2434; min-height: 100vh; color: #a1a1aa; }
+        .sidebar .nav-link { color: #a1a1aa; padding: 12px 20px; font-weight: 500; border-radius: 8px; margin: 4px 12px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #333a48; color: #ffffff; }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar Đen -->
+        <div class="sidebar d-flex flex-column shadow" style="width: 260px;">
+            <div class="p-4 d-flex align-items-center gap-3 border-bottom border-secondary border-opacity-25 mb-3">
+                <div class="bg-warning text-dark rounded px-2 py-1"><i class="bi bi-phone-vibrate-fill fs-4"></i></div>
+                <div>
+                    <h5 class="text-white fw-bold mb-0">PhoneStore</h5>
+                    <small class="text-warning">Admin Portal</small>
+                </div>
+            </div>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-pie-chart-fill me-2 text-info"></i> Bảng điều khiển
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Index">
+                        <i class="bi bi-box-seam-fill me-2 text-warning"></i> Quản lý Sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                        <i class="bi bi-receipt-cutoff me-2 text-success"></i> Quản lý Đơn hàng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
+                        <i class="bi bi-people-fill me-2 text-primary"></i> Quản lý Tài khoản
+                    </a>
+                </li>
+            </ul>
+            <div class="mt-auto p-3">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-outline-light w-100 rounded-3">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Về cửa hàng
+                </a>
+            </div>
+        </div>
+
+        <!-- Khung Nội dung Nền Xám -->
+        <div class="flex-grow-1 admin-content-wrapper">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            
+            @RenderBody()
+        </div>
+    </div>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

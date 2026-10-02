@@ -1,0 +1,171 @@
+﻿@model IEnumerable<PhoneStore.Web.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<!-- 1. Hero Banner -->
+<div class="hero-store p-4 p-md-5 mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <span class="badge hero-badge rounded-pill px-3 py-2 mb-3">
+                🔥 ĐẠI TIỆC CÔNG NGHỆ - GIẢM ĐẾN 5 TRIỆU
+            </span>
+            <h1 class="display-6 fw-bold mb-2">Lên đời Siêu phẩm Flagship Chính hãng!!!</h1>
+            <p class="text-white-50 mb-0 fs-6">
+                Cam kết 100% máy mới nguyên seal • Thu cũ đổi mới trợ giá cao nhất • Giao hàng siêu tốc 2 giờ nội thành.
+            </p>
+        </div>
+        <div class="col-lg-4 text-center d-none d-lg-block">
+            <i class="bi bi-phone opacity-75" style="font-size: 5.5rem;"></i>
+            <i class="bi bi-smartwatch text-info opacity-75" style="font-size: 4rem;"></i>
+            <i class="bi bi-headphones text-danger opacity-75" style="font-size: 5rem;"></i>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Bốn ô Cam kết Dịch vụ (Trust Badges) -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="policy-box d-flex align-items-center gap-3 h-100">
+            <div class="policy-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-patch-check-fill"></i></div>
+            <div>
+                <div class="fw-bold small">Chính hãng 100%</div>
+                <div class="text-muted" style="font-size: 0.78rem;">Nguyên seal, đủ VAT</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="policy-box d-flex align-items-center gap-3 h-100">
+            <div class="policy-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-truck"></i></div>
+            <div>
+                <div class="fw-bold small">Giao nhanh 2 giờ</div>
+                <div class="text-muted" style="font-size: 0.78rem;">Miễn phí vận chuyển</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="policy-box d-flex align-items-center gap-3 h-100">
+            <div class="policy-icon bg-success bg-opacity-10 text-success"><i class="bi bi-arrow-repeat"></i></div>
+            <div>
+                <div class="fw-bold small">1 đổi 1 30 ngày</div>
+                <div class="text-muted" style="font-size: 0.78rem;">Bảo hành 12 tháng</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="policy-box d-flex align-items-center gap-3 h-100">
+            <div class="policy-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-credit-card-2-front-fill"></i></div>
+            <div>
+                <div class="fw-bold small">Trả góp 0% lãi</div>
+                <div class="text-muted" style="font-size: 0.78rem;">Duyệt hồ sơ 5 phút</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Thanh Tìm kiếm & Bộ lọc -->
+<div class="filter-bar p-3 mb-4">
+    <form method="get" asp-action="Index" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control border-start-0 ps-0" placeholder="Bạn cần tìm điện thoại gì? (VD: iPhone 16, S24 Ultra)..." />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="categoryId" class="form-select">
+                <option value="">📱 Tất cả hãng sản xuất</option>
+                @if (ViewBag.Categories != null)
+                {
+                    foreach (var cat in ViewBag.Categories)
+                    {
+                        <option value="@cat.Id" selected="@(ViewBag.SelectedCategory == cat.Id || ViewBag.CategoryId == cat.Id)">@cat.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="priceRange" class="form-select">
+                <option value="">💰 Mọi mức giá</option>
+                <option value="under15" selected="@(ViewBag.PriceRange == "under15")">Dưới 15 triệu</option>
+                <option value="15to25" selected="@(ViewBag.PriceRange == "15to25")">Từ 15 - 25 triệu</option>
+                <option value="over25" selected="@(ViewBag.PriceRange == "over25")">Trên 25 triệu</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 rounded-3">
+                <i class="bi bi-funnel-fill me-1"></i> Lọc kết quả
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- 4. Lưới Sản phẩm Điện thoại -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold mb-0"><i class="bi bi-fire text-danger me-1"></i> Điện thoại Nổi bật Nhất</h5>
+    <span class="text-muted small">Hiển thị <strong>@Model.Count()</strong> sản phẩm</span>
+</div>
+
+<div class="row g-3">
+    @foreach (var item in Model)
+    {
+        <div class="col-lg-4 col-md-6">
+            <div class="phone-card h-100">
+                <!-- Nhãn trên cùng của thẻ -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge-installment">Trả góp 0%</span>
+                    @if (item.StockQuantity > 0)
+                    {
+                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>Sẵn hàng</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold">Tạm hết hàng</span>
+                    }
+                </div>
+
+                <!-- Hình ảnh sản phẩm -->
+                <a asp-action="Details" asp-route-id="@item.Id" class="phone-img-wrap text-decoration-none">
+                    <img src="@item.ImageUrl" alt="@item.Name" />
+                </a>
+
+                <!-- Thông tin máy -->
+                <div class="mb-1">
+                    <span class="text-primary fw-bold" style="font-size: 0.75rem; text-transform: uppercase;">@item.Category?.Name</span>
+                </div>
+                <a asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none">
+                    <h5 class="phone-title mb-2">@item.Name</h5>
+                </a>
+
+                <!-- Nhãn thông số kỹ thuật -->
+                <div class="d-flex gap-1 flex-wrap mb-3">
+                    <span class="spec-tag"><i class="bi bi-memory me-1"></i>@item.RAM</span>
+                    <span class="spec-tag"><i class="bi bi-hdd me-1"></i>@item.Storage</span>
+                    <span class="spec-tag"><i class="bi bi-palette me-1"></i>@item.Color</span>
+                </div>
+
+                <!-- Giá bán & Khuyến mãi -->
+                <div class="mt-auto">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <span class="phone-price">@item.Price.ToString("N0") ₫</span>
+                        <span class="text-muted text-decoration-line-through small">@((item.Price * 1.08m).ToString("N0")) ₫</span>
+                    </div>
+
+                    <div class="promo-note mb-3">
+                        <i class="bi bi-gift-fill text-danger me-1"></i> Thu cũ lên đời trợ giá đến <strong>2.000.000₫</strong>
+                    </div>
+
+                    <!-- Nút bấm hành động -->
+                    <div class="d-flex gap-2">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-detail-outline py-2 w-50">
+                            Chi tiết
+                        </a>
+                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@item.Id" class="btn btn-buy-now py-2 w-50">
+                            <i class="bi bi-cart-plus me-1"></i> Mua ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

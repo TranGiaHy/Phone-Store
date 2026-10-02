@@ -1,0 +1,92 @@
+﻿@{
+ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="row justify-content-center align-items-center my-4">
+    <div class="col-md-6 col-lg-5">
+        <!-- Khung giữa -->
+        <div class="card shadow rounded-4 p-4 p-md-5" style="background-color: #e9ecef; border: 1px solid #cbd5e1;">
+            <!-- Header biểu mẫu -->
+            <div class="text-center mb-4">
+                <div class="bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 64px; height: 64px;">
+                    <i class="bi bi-person-lock fs-2"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">Đăng nhập</h3>
+                <p class="text-secondary small mb-0">Chào mừng bạn quay trở lại với <strong>PhoneStore</strong></p>
+            </div>
+
+            <!-- Thông báo lỗi nếu nhập sai -->
+            @if (ViewBag.Error != null)
+            {
+            <div class="alert alert-danger d-flex align-items-center rounded-3 py-2 small mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div>@ViewBag.Error</div>
+            </div>
+            }
+            @if (!ViewData.ModelState.IsValid)
+            {
+            <div class="alert alert-danger rounded-3 py-2 small mb-3">
+                <div asp-validation-summary="All" class="mb-0"></div>
+            </div>
+            }
+
+            <form asp-action="Login" method="post">
+                <!-- Ô nhập Email -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-dark">Email đăng nhập</label>
+                    <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0 text-secondary">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control bg-white border-0 py-2" placeholder="Nhập email của bạn..." required />
+                    </div>
+                </div>
+
+                <!-- Ô nhập Mật khẩu có con mắt Ẩn/Hiện -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small text-dark">Mật khẩu</label>
+                    <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                        <span class="input-group-text bg-white border-0 text-secondary">
+                            <i class="bi bi-shield-lock"></i>
+                        </span>
+                        <input type="password" name="password" id="loginPassword" class="form-control bg-white border-0 py-2" placeholder="Nhập mật khẩu..." required />
+                        <button type="button" class="input-group-text bg-white border-0 text-secondary" onclick="togglePassword('loginPassword', 'loginEyeIcon')" title="Hiện/Ẩn mật khẩu" style="cursor: pointer;">
+                            <i class="bi bi-eye-slash" id="loginEyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nút Đăng nhập -->
+                <button type="submit" class="btn btn-buy-now w-100 py-2 fs-6 shadow-sm mb-3">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                </button>
+
+                <div class="text-center small text-secondary pt-3 border-top border-secondary border-opacity-25">
+                    Chưa có tài khoản?
+                    <a asp-action="Register" class="text-primary fw-bold text-decoration-none ms-1">
+                        Đăng ký ngay <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("bi-eye-slash");
+            eyeIcon.classList.add("bi-eye", "text-primary");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("bi-eye", "text-primary");
+            eyeIcon.classList.add("bi-eye-slash");
+        }
+    }
+</script>
+}

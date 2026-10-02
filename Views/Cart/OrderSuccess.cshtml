@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="text-center py-5">
+    <div class="display-1 text-success mb-3">🎉</div>
+    <h2 class="fw-bold text-success">Đặt hàng thành công!</h2>
+    <p class="lead">Mã đơn hàng của bạn là: <strong>#@ViewBag.OrderId</strong></p>
+    <p class="text-muted">Cảm ơn bạn đã mua sắm tại PhoneStore. Chúng tôi sẽ sớm liên hệ để giao hàng.</p>
+    <div class="mt-4 d-flex justify-content-center gap-3">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Tiếp tục mua sắm</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Account" asp-action="MyOrders" class="btn btn-outline-success">Xem lịch sử đơn hàng</a>
+        }
+    </div>
+</div>

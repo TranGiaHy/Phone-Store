@@ -1,0 +1,104 @@
+﻿@model PhoneStore.Web.Models.Order
+@{
+    ViewData["Title"] = "Thanh toán đơn hàng";
+    var cart = ViewBag.Cart as List<PhoneStore.Web.Models.CartItem>;
+    decimal totalAmount = ViewBag.TotalAmount ?? 0;
+}
+
+<h2 class="mb-4">💳 Thanh toán đơn hàng</h2>
+
+<div class="row g-4">
+    <!-- Cột trái: Thông tin giao hàng & Cổng thanh toán -->
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 p-4">
+            <h5 class="fw-bold mb-3">1. Thông tin người nhận</h5>
+            <form asp-action="Checkout" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Họ và tên người nhận *</label>
+                    <input asp-for="CustomerName" class="form-control" placeholder="Nguyễn Văn A" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại liên hệ *</label>
+                    <input asp-for="Phone" class="form-control" placeholder="0901234567" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Địa chỉ giao hàng chi tiết *</label>
+                    <textarea asp-for="ShippingAddress" class="form-control" rows="2" placeholder="Số nhà, đường, Phường/Xã, Quận/Huyện, TP..." required></textarea>
+                </div>
+
+                <hr class="my-4" />
+                <h5 class="fw-bold mb-3">2. Phương thức thanh toán</h5>
+
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="COD" id="payCOD" checked onchange="toggleCardForm()" />
+                    <label class="form-check-label fw-semibold" for="payCOD">
+                        🚚 Thanh toán khi nhận hàng (COD)
+                    </label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="Visa" id="payVisa" onchange="toggleCardForm()" />
+                    <label class="form-check-label fw-semibold text-primary" for="payVisa">
+                        💳 Thanh toán trực tuyến qua Thẻ Quốc tế (Visa / MasterCard)
+                    </label>
+                </div>
+
+                <!-- Khung nhập thẻ giả lập (Mock Payment Gateway) -->
+                <div id="visaCardForm" class="p-3 bg-light rounded border mb-3" style="display: none;">
+                    <h6 class="text-primary fw-bold mb-3">🔒 Cổng thanh toán trực tuyến (Visa/MasterCard)</h6>
+                    <div class="mb-2">
+                        <label class="form-label small">Số thẻ (Card Number)</label>
+                        <input type="text" name="cardNumber" class="form-control" placeholder="4111 **** **** 1111" maxlength="19" />
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label small">Ngày hết hạn (MM/YY)</label>
+                            <input type="text" class="form-control" placeholder="12/28" maxlength="5" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small">Mã bảo mật (CVV)</label>
+                            <input type="password" class="form-control" placeholder="***" maxlength="3" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                    Xác nhận Đặt hàng (@totalAmount.ToString("N0") ₫)
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cột phải: Tóm tắt đơn hàng -->
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 p-4 bg-light">
+            <h5 class="fw-bold mb-3">Tóm tắt đơn hàng</h5>
+            @if (cart != null)
+            {
+                <ul class="list-group list-group-flush mb-3 bg-transparent">
+                    @foreach (var item in cart)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent px-0">
+                            <div>
+                                <strong>@item.ProductName</strong>
+                                <div class="text-muted small">Số lượng: @item.Quantity</div>
+                            </div>
+                            <span class="fw-semibold">@item.Total.ToString("N0") ₫</span>
+                        </li>
+                    }
+                </ul>
+            }
+            <div class="d-flex justify-content-between border-top pt-3">
+                <span class="fs-5 fw-bold">Tổng thanh toán:</span>
+                <span class="fs-4 fw-bold text-danger">@totalAmount.ToString("N0") ₫</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCardForm() {
+        const isVisa = document.getElementById('payVisa').checked;
+        document.getElementById('visaCardForm').style.display = isVisa ? 'block' : 'none';
+    }
+</script>

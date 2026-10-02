@@ -1,0 +1,90 @@
+﻿@model IEnumerable<PhoneStore.Web.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý Đơn hàng";
+}
+
+<div class="d-flex align-items-center mb-4">
+    <div class="header-icon-box icon-box-success me-3">
+        <i class="bi bi-box-seam"></i>
+    </div>
+    <div>
+        <h3 class="fw-bold text-dark mb-1">Quản lý & Duyệt Đơn hàng</h3>
+        <span class="text-muted small">Cập nhật trạng thái vận chuyển, thanh toán và xóa đơn lỗi</span>
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+    <div class="admin-card border-top border-4 border-success p-0 overflow-hidden mb-4">
+        <div class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge bg-dark rounded-3 px-3 py-2 fs-6 me-2 shadow-sm">#@item.Id</span>
+                <span class="fw-bold text-dark fs-6">@item.CustomerName</span>
+                <span class="text-primary fw-medium mx-1">(@item.Phone)</span>
+                <span class="text-muted small"><i class="bi bi-calendar3 ms-2 me-1"></i> @item.OrderDate.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            
+            <div class="d-flex gap-2 align-items-center">
+                <!-- Form Lưu Trạng thái -->
+                <form asp-action="UpdateStatus" method="post" class="d-flex gap-2 align-items-center mb-0">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    
+                    <select name="paymentStatus" class="form-select fw-medium shadow-sm border-0" style="width: 160px; border-radius: 8px;">
+                        <option value="Unpaid" selected="@(item.PaymentStatus == "Unpaid")">⏳ Chưa thu tiền</option>
+                        <option value="Paid" selected="@(item.PaymentStatus == "Paid")">✅ Đã thu tiền</option>
+                    </select>
+
+                    <select name="orderStatus" class="form-select fw-medium shadow-sm border-0" style="width: 160px; border-radius: 8px;">
+                        <option value="Pending" selected="@(item.OrderStatus == "Pending")">Chờ xử lý</option>
+                        <option value="Shipping" selected="@(item.OrderStatus == "Shipping")">Đang giao hàng</option>
+                        <option value="Delivered" selected="@(item.OrderStatus == "Delivered")">Hoàn tất</option>
+                        <option value="Cancelled" selected="@(item.OrderStatus == "Cancelled")">Hủy đơn</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm rounded-3">Lưu</button>
+                </form>
+
+                <!-- Nút Xóa đơn hàng -->
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="mb-0" onsubmit="return confirm('Bạn có chắc muốn xóa vĩnh viễn đơn hàng #@item.Id này không? (Sản phẩm sẽ tự động được hoàn lại vào kho)');">
+                    <button type="submit" class="btn btn-danger px-3 py-2 fw-bold shadow-sm rounded-3" title="Xóa đơn hàng">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div class="small mb-4 bg-light rounded-3 p-3 border">
+                <i class="bi bi-geo-alt-fill text-danger me-1"></i> <span class="text-muted">Giao đến:</span> <strong class="text-dark">@item.ShippingAddress</strong>
+                <span class="ms-3 text-muted">Phương thức:</span> <span class="badge bg-secondary ms-1">@item.PaymentMethod</span>
+            </div>
+
+            @if (item.OrderDetails != null)
+            {
+                <div class="admin-table-wrapper mb-3">
+                    <table class="table admin-table mb-0">
+                        <tbody>
+                            @foreach (var detail in item.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-phone text-muted me-3 fs-5"></i>
+                                            <span class="fw-semibold text-dark fs-6">@(detail.Product?.Name ?? "Sản phẩm")</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"><span class="badge badge-soft-info rounded-pill px-3 py-1">Số lượng: @(detail.Quantity)</span></td>
+                                    <td class="text-end text-dark fw-medium fs-6">@detail.UnitPrice.ToString("N0") ₫</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-2">
+                <span class="fw-bold text-secondary text-uppercase" style="font-size: 0.85rem;">Tổng thanh toán:</span>
+                <span class="text-danger fw-bold fs-4">@item.TotalAmount.ToString("N0") ₫</span>
+            </div>
+        </div>
+    </div>
+}

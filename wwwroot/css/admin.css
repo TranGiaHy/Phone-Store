@@ -1,0 +1,75 @@
+﻿/* Nền xám nhạt cho toàn bộ phần nội dung Admin */
+.admin-content-wrapper {
+    background-color: #f4f6f8;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+/* Thẻ trắng nổi bật trên nền xám */
+.admin-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Khối Tiêu đề (Header Icons) */
+.header-icon-box {
+    width: 54px;
+    height: 54px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-size: 1.75rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+}
+.icon-box-primary { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #2563eb; border: 1px solid #bfdbfe; }
+.icon-box-warning { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color: #d97706; border: 1px solid #fde68a; }
+.icon-box-success { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); color: #059669; border: 1px solid #a7f3d0; }
+.icon-box-purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); color: #7e22ce; border: 1px solid #e9d5ff; }
+
+/* Làm đẹp Bảng dữ liệu (Tables) */
+.admin-table-wrapper {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+.admin-table { margin-bottom: 0; }
+.admin-table th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 1.25rem;
+}
+.admin-table td {
+    vertical-align: middle;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1rem 1.25rem;
+}
+.admin-table tr:hover td { background-color: #f8fafc; }
+.admin-table tr:last-child td { border-bottom: none; }
+
+/* Các nhãn trạng thái (Badge) */
+.badge-soft-success { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+.badge-soft-warning { background-color: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+.badge-soft-danger { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+.badge-soft-info { background-color: #dbeafe; color: #1e40af; border: 1px solid #60a5fa; }
+
+/* Nút bấm (Action Buttons) */
+.btn-admin-action {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-admin-action:hover { transform: translateY(-1px); }

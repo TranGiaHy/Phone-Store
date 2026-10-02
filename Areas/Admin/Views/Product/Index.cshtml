@@ -1,0 +1,77 @@
+﻿@model IEnumerable<PhoneStore.Web.Models.Product>
+@{
+    ViewData["Title"] = "Quản lý Sản phẩm";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center">
+        <div class="header-icon-box icon-box-warning me-3">
+            <i class="bi bi-phone"></i>
+        </div>
+        <div>
+            <h3 class="fw-bold text-dark mb-1">Danh sách Điện thoại</h3>
+            <span class="text-muted small">Quản lý kho hàng, cảnh báo tồn kho và giá bán</span>
+        </div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm mt-3 mt-md-0">
+        <i class="bi bi-plus-circle me-1"></i> Thêm điện thoại mới
+    </a>
+</div>
+
+<div class="admin-card p-4">
+    <div class="admin-table-wrapper">
+        <table class="table admin-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Hãng</th>
+                    <th>Cấu hình</th>
+                    <th>Giá bán</th>
+                    <th>Tình trạng kho</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.Name" class="rounded border p-1" style="width: 56px; height: 56px; object-fit: contain; background: #fff;" />
+                        </td>
+                        <td class="fw-bold text-dark fs-6">@item.Name</td>
+                        <td><span class="badge bg-secondary text-white rounded-pill px-3 py-1">@item.Category?.Name</span></td>
+                        <td class="small text-muted">@item.RAM | @item.Storage | @item.Color</td>
+                        <td class="text-danger fw-bold fs-6">@item.Price.ToString("N0") ₫</td>
+                        <td>
+                            @if (item.StockQuantity > 0)
+                            {
+                                <span class="badge badge-soft-success rounded-pill px-3 py-1">@item.StockQuantity máy</span>
+                            }
+                            else if (item.StockQuantity == 0)
+                            {
+                                <span class="badge badge-soft-warning rounded-pill px-3 py-1">Vừa hết hàng</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-soft-danger rounded-pill px-3 py-1">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Âm @Math.Abs(item.StockQuantity) máy (Nhập thêm)
+                                </span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-admin-action">
+                                <i class="bi bi-pencil-square"></i> Sửa
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc muốn xóa @item.Name?');">
+                                <button type="submit" class="btn btn-outline-danger btn-admin-action ms-1">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

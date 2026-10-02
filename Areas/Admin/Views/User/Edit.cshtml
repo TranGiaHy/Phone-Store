@@ -1,0 +1,66 @@
+@model PhoneStore.Web.Models.ApplicationUser
+@{
+ViewData["Title"] = "Cập nhật Tài khoản";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="text-decoration-none text-muted fw-medium"><i class="bi bi-arrow-left me-1"></i> Quay lại danh sách tài khoản</a>
+</div>
+
+<div class="admin-card border-top border-4 border-purple mx-auto" style="max-width: 600px; border-top-color: #a855f7 !important;">
+    <!-- Header -->
+    <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+        <div class="header-icon-box icon-box-purple me-3">
+            <i class="bi bi-person-gear"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Cập nhật Tài khoản & Đặt lại Mật khẩu</h4>
+            <span class="text-muted small">Quản lý thông tin cá nhân và bảo mật tài khoản</span>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+    <div class="alert alert-danger rounded-3 shadow-sm py-2 small"><i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]</div>
+    }
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-secondary">Email (Tên đăng nhập) *</label>
+            <input type="email" name="email" value="@Model.Email" class="form-control bg-light border-0 shadow-sm py-2" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-secondary">Số điện thoại</label>
+            <input type="text" name="phoneNumber" value="@Model.PhoneNumber" class="form-control bg-light border-0 shadow-sm py-2" placeholder="090..." />
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold small text-secondary">Vai trò (Phân quyền)</label>
+            <select name="role" class="form-select bg-light border-0 shadow-sm py-2">
+                <option value="Customer" selected="@(ViewBag.CurrentRole == "Customer")">Khách hàng (Customer)</option>
+                <option value="Admin" selected="@(ViewBag.CurrentRole == "Admin")">Quản trị viên (Admin)</option>
+            </select>
+        </div>
+
+        <!-- Khung Reset Mật khẩu (Viền cam cảnh báo) -->
+        <div class="mb-4 bg-warning bg-opacity-10 p-3 p-md-4 rounded-4 border border-warning shadow-sm">
+            <label class="form-label fw-bold text-dark mb-2">
+                <i class="bi bi-key-fill text-warning fs-5 me-1 align-middle"></i> Đặt lại mật khẩu mới (Reset Password)
+            </label>
+            <input type="text" name="newPassword" class="form-control border-warning border-opacity-50 py-2 shadow-sm" minlength="6" placeholder="Để trống nếu muốn giữ nguyên mật khẩu cũ..." />
+            <small class="text-muted d-block mt-2" style="font-size: 0.8rem;">
+                Vì lý do bảo mật, mật khẩu cũ được mã hóa một chiều <code class="text-secondary">(@Model.PasswordHash?.Substring(0, 15)...)</code>. Nếu khách quên mật khẩu, bạn chỉ cần nhập mật khẩu mới vào ô trên để cấp lại.
+            </small>
+        </div>
+
+        <div class="d-flex gap-2 pt-3 border-top">
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                <i class="bi bi-save me-1"></i> Lưu thay đổi
+            </button>
+            <a asp-action="Index" class="btn btn-light rounded-pill px-4 border text-dark fw-medium">Hủy</a>
+        </div>
+    </form>
+</div>

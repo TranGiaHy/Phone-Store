@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "Bảng điều khiển";
+}
+
+<!-- Khối Tiêu đề (Màu Xanh dương) -->
+<div class="d-flex align-items-center mb-4">
+    <div class="header-icon-box icon-box-primary me-3">
+        <i class="bi bi-bar-chart-fill"></i>
+    </div>
+    <div>
+        <h3 class="fw-bold text-dark mb-1">Tổng quan Kinh doanh</h3>
+        <span class="text-muted small">Theo dõi doanh thu và đơn hàng theo thời gian thực</span>
+    </div>
+</div>
+
+<!-- Thống kê khối màu nổi bật -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <div class="card-body">
+                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Tổng doanh thu</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TotalRevenue.ToString("N0") ₫</h2>
+                <i class="bi bi-cash-stack position-absolute opacity-25" style="font-size: 4rem; right: 20px; bottom: 10px;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="card-body">
+                <h6 class="text-white-50 text-uppercase fw-bold mb-2">Tổng đơn hàng</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TotalOrders đơn</h2>
+                <i class="bi bi-bag-check position-absolute opacity-25" style="font-size: 4rem; right: 20px; bottom: 10px;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <div class="card-body">
+                <h6 class="text-dark-50 text-uppercase fw-bold mb-2 opacity-75">Sản phẩm trên kệ</h6>
+                <h2 class="fw-bold mb-0">@ViewBag.TotalProducts mẫu máy</h2>
+                <i class="bi bi-phone position-absolute opacity-25" style="font-size: 4rem; right: 20px; bottom: 10px;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bảng Đơn hàng -->
+<div class="admin-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-muted me-2"></i>Đơn hàng mới nhất</h5>
+        <a asp-controller="Order" asp-action="Index" class="btn btn-sm btn-outline-primary rounded-pill px-3">Xem tất cả</a>
+    </div>
+    <div class="admin-table-wrapper">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Mã ĐH</th>
+                    <th>Ngày đặt</th>
+                    <th>Thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var order in ViewBag.RecentOrders)
+                {
+                    bool isPaid = order.PaymentStatus == "Paid";
+                    string statusBadge = order.OrderStatus switch
+                    {
+                        "Pending" => "badge-soft-warning",
+                        "Shipping" => "badge-soft-info",
+                        "Delivered" => "badge-soft-success",
+                        "Cancelled" => "badge-soft-danger",
+                        _ => "badge-soft-info"
+                    };
+                    string statusLabel = order.OrderStatus switch
+                    {
+                        "Pending" => "Chờ xử lý",
+                        "Shipping" => "Đang giao hàng",
+                        "Delivered" => "Hoàn tất",
+                        "Cancelled" => "Đã hủy",
+                        _ => order.OrderStatus
+                    };
+
+                    <tr>
+                        <td class="fw-bold text-dark">#@order.Id</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge @(isPaid ? "badge-soft-success" : "badge-soft-warning")">
+                                @order.PaymentMethod - @(isPaid ? "Đã thu tiền" : "Chưa thu tiền")
+                            </span>
+                        </td>
+                        <td><span class="badge @statusBadge">@statusLabel</span></td>
+                        <td class="text-end text-danger fw-bold">@order.TotalAmount.ToString("N0") ₫</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
